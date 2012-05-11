@@ -128,24 +128,22 @@
             '</div>' + 
           '</div>');
       
-      $("#session-login-panel", renderTo).click(function () {
+      $("#session-login-panel", renderTo).click($.proxy(function () {
         this.store.setValue('session-signin-location', document.location.href);
         this.store.setValue('session-signin-timestamp', this.timestamp);
-      }.createDelegate(this));
+      }, this));
       
-      $("#session-logout-panel", renderTo).click(function () {    
+      $("#session-logout-panel", renderTo).click($.proxy(function () {    
         this.ajax.getJson({
           params: {
             action: 'logout'
           },
           url: this.url,
-          onSuccess: function () {
-            this.flushStore();
-            this.evaluate();
-          }.createDelegate(this)  
+          onSuccess: $.proxy(function () {
+            this.reevaluate();
+          }, this)  
         });
-      }.createDelegate(this));
-      
+      }, this));
       $("head:first").append(
         '<style type="text/css">' +
           '#session-panel { ' + this.panel.style + '}' +
@@ -185,7 +183,7 @@
             this.username = this.store.getValue('session-username', undefined);
             this.onEstablished(this);
             // Check again session status after 
-            window.setTimeout(this.evaluate.createDelegate(this), this.timeout);
+            window.setTimeout($.proxy(this.evaluate, this), this.timeout);
           }
         }
         else {
@@ -211,7 +209,7 @@
       //Is any other tab getting data from server?
       if (this.store.getValue('session-locked', false) === true) {
         console.debug("Server access is locked - session is being loaded from server in another tab");
-        window.setTimeout(this.evaluate.createDelegate(this), 100);
+        window.setTimeout($.proxy(this.evaluate, this), 100);
         return;
       }
       //Load session from server
@@ -225,7 +223,7 @@
         /**
          * @param {Object} response
          */
-        onSuccess : function (response) {
+        onSuccess : $.proxy(function (response) {
           console.debug("Session data was successfully received from server");
           var timestamp = (new Date()).getTime().toString();
           this.store.setValue('session-timestamp', timestamp);
@@ -238,12 +236,12 @@
           this.store.setValue('session-locked', false);
           
           this.onEstablished(this);
-          window.setTimeout(this.evaluate.createDelegate(this), this.timeout);
-        }.createDelegate(this),
+          window.setTimeout($.proxy(this.evaluate, this), this.timeout);
+        }, this),
         /**
          * @param {Object} response
          */
-        onFailure: function (response) {
+        onFailure: $.proxy(function (response) {
           console.debug("Session was not loaded from server");
           this.username = undefined;
           var timestamp = new Date().getTime().toString();
@@ -254,8 +252,8 @@
           this.store.setValue('session-locked', false);
           
           this.onEstablished(this);
-          window.setTimeout(this.evaluate.createDelegate(this), this.timeout);
-        }.createDelegate(this)
+          window.setTimeout($.proxy(this.evaluate, this), this.timeout);
+        }, this)
       });
     },
   
