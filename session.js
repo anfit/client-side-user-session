@@ -20,7 +20,7 @@
   
   // TODO document APIs and interfaces of configuration objects
   /**
-   * ClientSideUserSession singleton object
+   * Session singleton object
    * @class ClientSideUserSession
    * @singleton 
    * @depends console, jQuery
@@ -156,7 +156,7 @@
     // private
     evaluate: function () {
       // First page loaded after session was created has an #auth tag. 
-      // ClientSideUserSession should be then flushed and requeried from server.
+      // Session should be then flushed and requeried from server.
       if (document.location.href.match(/#auth$/)) {
         console.info("New session detected");
         // Flush session
@@ -165,20 +165,20 @@
         this.loadFromServer();
       }
       else {
-        console.debug("ClientSideUserSession is not new");
+        console.debug("Session is not new");
         // An established session marks that in local store
         if (this.store.getValue('session-established', false) === true) {
-          console.debug("ClientSideUserSession data is available");
-          // ClientSideUserSession stored in local store expires after timeout
+          console.debug("Session data is available");
+          // Session stored in local store expires after timeout
           if ((new Date()).getTime() - this.store.getValue('session-timestamp', 0) > this.timeout) {
-            console.info("ClientSideUserSession for user ${username} expired".replace("${username}", this.username));
+            console.info("Session for user ${username} expired".replace("${username}", this.username));
             // Flush session
             this.flushStore();
             // Load session from server
             this.loadFromServer();
           }
           else {
-            console.debug("ClientSideUserSession for user ${username} has not expired yet".replace("${username}", this.username));
+            console.debug("Session for user ${username} has not expired yet".replace("${username}", this.username));
             // Load session from local store
             console.debug("Loading session from local store");
             this.timestamp = this.store.getValue('session-timestamp', 0);
@@ -189,7 +189,7 @@
           }
         }
         else {
-          console.debug("ClientSideUserSession data is not available, requery from server is required");
+          console.debug("Session data is not available, requery from server is required");
           // Load session from server
           this.loadFromServer();
         }
@@ -226,7 +226,7 @@
          * @param {Object} response
          */
         onSuccess : function (response) {
-          console.debug("ClientSideUserSession data was successfully received from server");
+          console.debug("Session data was successfully received from server");
           var timestamp = (new Date()).getTime().toString();
           this.store.setValue('session-timestamp', timestamp);
           this.timestamp = timestamp;
@@ -244,7 +244,7 @@
          * @param {Object} response
          */
         onFailure: function (response) {
-          console.debug("ClientSideUserSession was not loaded from server");
+          console.debug("Session was not loaded from server");
           this.username = undefined;
           var timestamp = new Date().getTime().toString();
           this.store.setValue('session-timestamp', timestamp);
