@@ -12,10 +12,10 @@
 
   // dependency check
   if(!context.$) {
-    throw "ClientSideUserSession has an unmet dependency: jQuery";
+    throw 'ClientSideUserSession has an unmet dependency: jQuery';
   }
   if(!context.console) {
-    throw "ClientSideUserSession has an unmet dependency: console";
+    throw 'ClientSideUserSession has an unmet dependency: console';
   }
   
   // TODO document APIs and interfaces of configuration objects
@@ -62,7 +62,7 @@
      * @cfg {Object.String} style style applied to panel. Default value is 'display: inline-block; position: absolute; top: 5px; left: 5px;'
      */
     panel: {
-      renderTo: "body:first",
+      renderTo: 'body:first',
       style: 'display: inline-block; position: absolute; top: 5px; left: 5px;'
     },
     
@@ -109,7 +109,7 @@
   
       var renderTo = $(this.panel.renderTo);
       if (!renderTo) {
-        throw "Wrong session config: renderTo points to no known DOM nodes";
+        throw 'Wrong session config: renderTo points to no known DOM nodes';
       }
       
       // TODO move html definition into a template object (to be overridden on demand)
@@ -128,12 +128,12 @@
             '</div>' + 
           '</div>');
       
-      $("#session-login-panel", renderTo).click($.proxy(function () {
+      $('#session-login-panel', renderTo).click($.proxy(function () {
         this.store.setValue('session-signin-location', document.location.href);
         this.store.setValue('session-signin-timestamp', this.timestamp);
       }, this));
       
-      $("#session-logout-panel", renderTo).click($.proxy(function () {    
+      $('#session-logout-panel', renderTo).click($.proxy(function () {    
         this.ajax.getJson({
           params: {
             action: 'logout'
@@ -144,7 +144,7 @@
           }, this)  
         });
       }, this));
-      $("head:first").append(
+      $('head:first').append(
         '<style type="text/css">' +
           '#session-panel { ' + this.panel.style + '}' +
           '.session-hidden { display: none !important;}' +
@@ -156,29 +156,29 @@
       // First page loaded after session was created has an #auth tag. 
       // Session should be then flushed and requeried from server.
       if (document.location.href.match(/#auth$/)) {
-        console.info("New session detected");
+        console.info('New session detected');
         // Flush session
         this.flushStore();
         // Load session from server
         this.loadFromServer();
       }
       else {
-        console.debug("Session is not new");
+        console.debug('Session is not new');
         // An established session marks that in local store
         if (this.store.getValue('session-established', false) === true) {
-          console.debug("Session data is available");
+          console.debug('Session data is available');
           // Session stored in local store expires after timeout
           if ((new Date()).getTime() - this.store.getValue('session-timestamp', 0) > this.timeout) {
-            console.info("Session for user ${username} expired".replace("${username}", this.username));
+            console.info('Session for user ${username} expired'.replace('${username}', this.username));
             // Flush session
             this.flushStore();
             // Load session from server
             this.loadFromServer();
           }
           else {
-            console.debug("Session for user ${username} has not expired yet".replace("${username}", this.username));
+            console.debug('Session for user ${username} has not expired yet'.replace('${username}', this.username));
             // Load session from local store
-            console.debug("Loading session from local store");
+            console.debug('Loading session from local store');
             this.timestamp = this.store.getValue('session-timestamp', 0);
             this.username = this.store.getValue('session-username', undefined);
             this.onEstablished(this);
@@ -187,7 +187,7 @@
           }
         }
         else {
-          console.debug("Session data is not available, requery from server is required");
+          console.debug('Session data is not available, requery from server is required');
           // Load session from server
           this.loadFromServer();
         }
@@ -208,12 +208,12 @@
     loadFromServer: function () {
       //Is any other tab getting data from server?
       if (this.store.getValue('session-locked', false) === true) {
-        console.debug("Server access is locked - session is being loaded from server in another tab");
+        console.debug('Server access is locked - session is being loaded from server in another tab');
         window.setTimeout($.proxy(this.evaluate, this), 100);
         return;
       }
       //Load session from server
-      console.debug("Loading session from server");
+      console.debug('Loading session from server');
       
       this.ajax.getJson({
         params: {
@@ -224,7 +224,7 @@
          * @param {Object} response
          */
         onSuccess : $.proxy(function (response) {
-          console.debug("Session data was successfully received from server");
+          console.debug('Session data was successfully received from server');
           var timestamp = (new Date()).getTime().toString();
           this.store.setValue('session-timestamp', timestamp);
           this.timestamp = timestamp;
@@ -242,7 +242,7 @@
          * @param {Object} response
          */
         onFailure: $.proxy(function (response) {
-          console.debug("Session was not loaded from server");
+          console.debug('Session was not loaded from server');
           this.username = undefined;
           var timestamp = new Date().getTime().toString();
           this.store.setValue('session-timestamp', timestamp);
@@ -265,15 +265,15 @@
     onEstablished: function (session) {
       if (session.username === undefined) {
         // authentication failure
-        console.info("Unauthenticated browser tab");
+        console.info('Unauthenticated browser tab');
         
-        $(".session-logout").text(this.language.logoutMsgNoname); 
+        $('.session-logout').text(this.language.logoutMsgNoname); 
       }
       else {
         // authentication successful
-        console.info("Authenticated as ${username}".replace('${username}', session.username));
+        console.info('Authenticated as ${username}'.replace('${username}', session.username));
         
-        $(".session-logout").html(this.language.logoutMsg.replace('${username}', session.username));
+        $('.session-logout').html(this.language.logoutMsg.replace('${username}', session.username));
         
         // sometimes sign in was not done from first page - then we need to go back to it.
         // it's stored in local store for that
@@ -294,12 +294,12 @@
      */
     toggleContext: function () {
       if (this.username === undefined) {
-        $(".session-only-authenticated").addClass('session-hidden');
-        $(".session-only-unauthenticated").removeClass('session-hidden');
+        $('.session-only-authenticated').addClass('session-hidden');
+        $('.session-only-unauthenticated').removeClass('session-hidden');
       }
       else {
-        $(".session-only-unauthenticated").addClass('session-hidden');
-        $(".session-only-authenticated").removeClass('session-hidden');
+        $('.session-only-unauthenticated').addClass('session-hidden');
+        $('.session-only-authenticated').removeClass('session-hidden');
       }
     },
   
