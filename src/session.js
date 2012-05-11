@@ -11,10 +11,10 @@
 (function (context) {
 
   // dependency check
-  if(!context.$) {
+  if (!context.$) {
     throw 'ClientSideUserSession has an unmet dependency: jQuery';
   }
-  if(!context.console) {
+  if (!context.console) {
     throw 'ClientSideUserSession has an unmet dependency: console';
   }
   
