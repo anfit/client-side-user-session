@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
+<project name="client-side-user-session dist builder" default="build" basedir=".">
+	
+	<!-- get timestamp -->
+	<tstamp>
+		<format property="date.day" pattern="yyyyMMdd" />
+	</tstamp>
+
+	<property name="build.dir" value="." description="build files" />
+	<property name="src.dir" value="../src" description="source files" />
+	<property name="dist.dir" value="../dist" description="dist files" />
+
+	<!-- manager -->
+	<target name="build">
+		<taskdef name="yuicompress"
+			classname="com.yahoo.platform.yui.compressor.YUICompressTask">
+			<classpath>
+				<fileset dir="${build.dir}/lib">
+					<include name="yuiAnt.jar" />
+					<include name="yuicompressor-2.4.2.jar" />
+				</fileset>
+			</classpath>
+		</taskdef>
+		<!-- minify javascript with some linebreaks -->
+		<yuicompress linebreak="400" warn="false" munge="yes"
+			preserveallsemicolons="true" outputfolder="${dist.dir}">
+			<fileset dir="${src.dir}">
+				<include name="session.js" />
+			</fileset>
+		</yuicompress>
+
+		<!-- rename minified file to current version -->
+		<move file="${dist.dir}/session.js" tofile="${dist.dir}/session-${date.day}.js"/>
+	</target>
+</project>

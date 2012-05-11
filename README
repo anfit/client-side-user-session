@@ -1,0 +1,1 @@
+The primary purpose of ClientSideUserSession object is to provide OpenId authentication for a Greasemonkey-based mashup. Mashup is applied on one website, which acts as a content and UI provider, while another provides data and an additional layer of user authentication. This class provides that layer.
